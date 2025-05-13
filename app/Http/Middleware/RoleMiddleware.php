@@ -8,23 +8,11 @@ use Illuminate\Http\Request;
 class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, $role)
-{
-    // Jika belum ada user, buat user dummy
-    if (!$request->user()) {
-        $fakeUser = new \stdClass();
-        $fakeUser->role = 'admin'; // Atau 'user'
+    {
+        if (auth()->user()->role !== $role) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
-        $request->setUserResolver(function () use ($fakeUser) {
-            return $fakeUser;
-        });
+        return $next($request);
     }
-
-    if ($request->user()->role !== $role) {
-        return response()->json(['message' => 'Unauthorized'], 403);
-    }
-
-    return response()->json(['message' => 'Berhasil lewat role middleware']);
 }
-
-}
-
