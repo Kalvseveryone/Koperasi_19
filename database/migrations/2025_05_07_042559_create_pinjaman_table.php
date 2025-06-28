@@ -12,19 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pinjamen', function (Blueprint $table) {
+        Schema::create('pinjaman', function (Blueprint $table) {
             $table->id();
-            $table->char('anggota_id', 36); // Ubah tipe menjadi char(36) untuk UUID
-            $table->decimal('jumlah_pinjaman', 10, 2);
-            $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');  // Default status adalah 'pending'
-            $table->timestamp('tanggal_pinjam')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->char('anggota_id', 36); // UUID
+            $table->decimal('jumlah', 10, 2);
+            $table->integer('jangka_waktu');
+            $table->string('tujuan');
+            $table->enum('status', ['pending', 'disetujui', 'ditolak', 'aktif'])->default('pending');
+            $table->text('catatan')->nullable();
+            $table->date('tanggal_pinjam')->useCurrent();
             $table->timestamps();
             
             // Menambahkan index untuk anggota_id
             $table->index('anggota_id');
 
             // Foreign key dengan cascade delete
-            $table->foreign('anggota_id')->references('id')->on('anggotas')->onDelete('cascade');
+            $table->foreign('anggota_id')->references('id')->on('anggota')->onDelete('cascade');
         });
     }
 
@@ -33,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pinjamen');
+        Schema::dropIfExists('pinjaman');
     }
 };

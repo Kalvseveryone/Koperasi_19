@@ -12,6 +12,34 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        if ($request->expectsJson()) {
+            return null;
+        }
+        
+        return route('login');
+    }
+
+    /**
+     * Handle an unauthenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  array  $guards
+     * @return void
+     *
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
+    protected function unauthenticated($request, array $guards)
+    {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            abort(response()->json([
+                'success' => false,
+                'message' => 'Sesi anda telah berakhir, mohon login kembali',
+                'code' => 'UNAUTHENTICATED'
+            ], 401));
+        }
+
+        throw new \Illuminate\Auth\AuthenticationException(
+            'Unauthenticated.', $guards, $this->redirectTo($request)
+        );
     }
 }

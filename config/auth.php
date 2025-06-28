@@ -40,6 +40,26 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'kolektor' => [
+            'driver' => 'session',
+            'provider' => 'kolektors',
+        ],
+        'anggota' => [
+            'driver' => 'session',
+            'provider' => 'anggota',
+        ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+        'api_kolektor' => [
+            'driver' => 'sanctum',
+            'provider' => 'kolektors',
+        ],
+        'api_anggota' => [
+            'driver' => 'sanctum',
+            'provider' => 'anggota',
+        ],
     ],
 
     /*
@@ -64,11 +84,14 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'kolektors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Kolektor::class,
+        ],
+        'anggota' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Anggota::class,
+        ],
     ],
 
     /*

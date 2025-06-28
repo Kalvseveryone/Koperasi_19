@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('anggotas', function (Blueprint $table) {
+    Schema::create('anggota', function (Blueprint $table) {
         $table->char('id', 36)->primary();  // Menggunakan UUID sebagai primary key
         $table->string('nama');
         $table->string('email')->unique();
         $table->string('password');
         $table->string('alamat');
+        $table->decimal('simpanan_pokok', 10, 2)->default(0);
+        $table->decimal('simpanan_wajib', 10, 2)->default(0);
+        $table->decimal('simpanan_sukarela', 10, 2)->default(0);
         $table->decimal('saldo_simpanan', 10, 2)->default(0);
         $table->timestamps();
     });
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('anggotas');
+        Schema::dropIfExists('anggota');
     }
 };
