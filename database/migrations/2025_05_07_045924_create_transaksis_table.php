@@ -12,19 +12,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksis', function (Blueprint $table) {
+        Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->char('anggota_id', 36); // Ubah tipe menjadi char(36) untuk UUID
-            $table->decimal('jumlah', 10, 2);  // Misalnya untuk jumlah transaksi
-            $table->string('jenis_transaksi');  // Misalnya 'setoran' atau 'penarikan'
-            $table->timestamp('tanggal_transaksi')->default(DB::raw('CURRENT_TIMESTAMP'));  // Waktu transaksi
+            $table->char('anggota_id', 36); // UUID
+            $table->decimal('jumlah', 10, 2);
+            $table->string('jenis_transaksi'); // 'simpanan', 'pinjaman', 'angsuran'
+            $table->string('jenis_simpanan')->nullable(); // 'pokok', 'wajib', 'sukarela'
+            $table->string('status')->default('pending'); // 'pending', 'sukses', 'gagal'
+            $table->timestamp('tanggal_transaksi')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
             
             // Menambahkan index untuk anggota_id
             $table->index('anggota_id');
 
             // Menambahkan foreign key dengan cascade delete
-            $table->foreign('anggota_id')->references('id')->on('anggotas')->onDelete('cascade');
+            $table->foreign('anggota_id')->references('id')->on('anggota')->onDelete('cascade');
         });
     }
 
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaksis');
+        Schema::dropIfExists('transaksi');
     }
 };

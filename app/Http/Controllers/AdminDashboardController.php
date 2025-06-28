@@ -13,7 +13,7 @@ class AdminDashboardController extends Controller
     {
         // Ambil data untuk ditampilkan di dashboard
         $totalAnggota = Anggota::count();
-        $totalPinjaman = Pinjaman::sum('jumlah_pinjaman');
+        $totalPinjaman = Pinjaman::sum('jumlah');
         $totalSimpanan = Anggota::sum('saldo_simpanan');
         $totalTransaksi = Transaksi::count();
 

@@ -17,12 +17,33 @@ class LaporanKeuanganController extends Controller
     {
         // Data untuk laporan keuangan
         $laporan = [
+            'total_anggota' => Anggota::count(),
             'total_simpanan' => Anggota::sum('saldo_simpanan'),
-            'total_pinjaman' => Pinjaman::sum('jumlah_pinjaman'),
+            'total_pinjaman' => Pinjaman::whereIn('status', ['aktif', 'disetujui'])->sum('jumlah'),
+            'total_pinjaman_pending' => Pinjaman::where('status', 'pending')->sum('jumlah'),
+            'total_pinjaman_ditolak' => Pinjaman::where('status', 'ditolak')->sum('jumlah'),
+            'total_denda' => Pinjaman::sum('denda'),
             'total_kolektor' => Kolektor::count(),
             'total_transaksi' => Transaksi::count(),
-            'total_denda' => Transaksi::where('jenis_transaksi', 'denda')->sum('jumlah'),
+            'pinjaman_aktif' => Pinjaman::where('status', 'aktif')->count(),
+            'pinjaman_pending' => Pinjaman::where('status', 'pending')->count(),
+            'pinjaman_ditolak' => Pinjaman::where('status', 'ditolak')->count(),
+            'total_angsuran' => Transaksi::where('jenis_transaksi', 'angsuran')->sum('jumlah'),
+            'total_denda_bayar' => Transaksi::where('jenis_transaksi', 'denda')->sum('jumlah'),
         ];
+
+        // Filter berdasarkan tanggal jika ada
+        if ($request->filled(['tanggal_mulai', 'tanggal_akhir'])) {
+            $laporan['transaksi_periode'] = Transaksi::whereBetween('created_at', [
+                $request->tanggal_mulai,
+                $request->tanggal_akhir
+            ])->get();
+            
+            $laporan['pinjaman_periode'] = Pinjaman::whereBetween('created_at', [
+                $request->tanggal_mulai,
+                $request->tanggal_akhir
+            ])->get();
+        }
 
         return view('admin.laporan.index', compact('laporan'));
     }

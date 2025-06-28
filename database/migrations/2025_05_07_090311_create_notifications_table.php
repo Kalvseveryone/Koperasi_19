@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Jika ingin menambahkan foreign key constraint
-            $table->foreign('notifiable_id')->references('id')->on('anggotas')->onDelete('cascade');
+            $table->foreign('notifiable_id')->references('id')->on('anggota')->onDelete('cascade');
         });
     }
 
