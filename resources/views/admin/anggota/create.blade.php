@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('img/images/logoadakita.png') }}">
     <title>Tambah Anggota | Adakita Koperasi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -165,93 +166,165 @@
 
 <body>
 
-    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+@extends('layouts.app')
 
-    <br>
-    <br>
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tambah Anggota Baru</h3>
+                </div>
+                <div class="card-body">
+                    <div class="top-actions mb-3">
+                        <a href="{{ route('admin.anggota') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="text-center">
-            <img src="{{ asset('img/images/logoadakita.png') }}" alt="Logo" class="img-fluid mb-2">
-            <h6>Adakita Koperasi</h6>
-        </div>
-        <a href="{{ route('admin.dashboard') }}"
-            class="{{ request()->routeIs('admin.dashboard') ? 'active-menu' : '' }}">
-            <i class="fas fa-home me-2"></i> Dashboard
-        </a>
-        <a href="{{ route('admin.anggota') }}" class="{{ request()->routeIs('admin.anggota') ? 'active-menu' : '' }}">
-            <i class="fas fa-users me-2"></i> Kelola Anggota
-        </a>
-        <a href="{{ route('admin.pinjaman') }}" class="{{ request()->routeIs('admin.pinjaman') ? 'active-menu' : '' }}">
-            <i class="fas fa-hand-holding-usd me-2"></i> Kelola Pinjaman
-        </a>
-        <a href="{{ route('admin.kolektor') }}" class="{{ request()->routeIs('admin.kolektor') ? 'active-menu' : '' }}">
-            <i class="fas fa-truck me-2"></i> Kelola Kolektor
-        </a>
-        <a href="{{ route('admin.laporan') }}" class="{{ request()->routeIs('admin.laporan') ? 'active-menu' : '' }}">
-            <i class="fas fa-chart-line me-2"></i> Laporan Keuangan
-        </a>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-danger w-100 mt-4">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </form>
-    </div>
-    <div class="container">
-        <div class="card text-center">
-            <div class="header-icon">
-                <i class="bi bi-person-plus-fill"></i>
+                    <form action="{{ route('admin.anggota.store') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nama" class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control @error('nama') is-invalid @enderror" 
+                                           id="nama" name="nama" value="{{ old('nama') }}" required>
+                                    @error('nama')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="nik" class="form-label">NIK</label>
+                                    <input type="text" class="form-control @error('nik') is-invalid @enderror" 
+                                           id="nik" name="nik" value="{{ old('nik') }}" required>
+                                    @error('nik')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="no_telepon" class="form-label">No. Telepon</label>
+                                    <input type="text" class="form-control @error('no_telepon') is-invalid @enderror" 
+                                           id="no_telepon" name="no_telepon" value="{{ old('no_telepon') }}" required>
+                                    @error('no_telepon')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                                           id="email" name="email" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="alamat" class="form-label">Alamat</label>
+                                    <textarea class="form-control @error('alamat') is-invalid @enderror" 
+                                              id="alamat" name="alamat" rows="3" required>{{ old('alamat') }}</textarea>
+                                    @error('alamat')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="saldo_simpanan" class="form-label">Saldo Simpanan (Opsional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control @error('saldo_simpanan') is-invalid @enderror" 
+                                               id="saldo_simpanan" name="saldo_simpanan" value="{{ old('saldo_simpanan', 0) }}" min="0">
+                                    </div>
+                                    <small class="text-muted">Kosongkan jika tidak ada saldo awal</small>
+                                    @error('saldo_simpanan')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                           id="password" name="password" required>
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                                    <input type="password" class="form-control" 
+                                           id="password_confirmation" name="password_confirmation" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <h1>Tambah Anggota Baru</h1>
-
-            <form action="{{ route('admin.anggota.store') }}" method="POST" class="text-start">
-                @csrf
-
-                <div class="mb-3">
-                    <label for="nama" class="form-label">Nama</label>
-                    <input type="text" name="nama" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="alamat" class="form-label">Alamat</label>
-                    <textarea name="alamat" class="form-control" rows="4" required></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="saldo_simpanan" class="form-label">Saldo Simpanan</label>
-                    <input type="number" name="saldo_simpanan" class="form-control" required>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Tambah Anggota</button>
-                </div>
-                <div class="mt-4 text-center">
-                    <a href="{{ route('admin.anggota') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali ke Daftar Anggota
-                    </a>
-                </div>
-            </form>
         </div>
     </div>
+</div>
+@endsection
 
-    <!-- Bootstrap JS + Icons -->
+    <!-- Bootstrap JS + Icons + SweetAlert2 + jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-     <script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
+
+        // Handle form submission
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                            showConfirmButton: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '{{ route("admin.anggota") }}';
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        let errorMessage = 'Terjadi kesalahan! Silakan coba lagi.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: errorMessage
+                        });
+                    }
+                });
+            });
+        });
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 </body>

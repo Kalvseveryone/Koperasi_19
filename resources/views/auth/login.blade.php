@@ -85,11 +85,11 @@
                 <div class="sidebar" id="sidebar">
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/images/logoadakita.png') }}" alt="Logo" class="img-fluid" width="140">
-                        <h6 class="mt-2 text-dark">Adakita Koperasi</h6>
+                        <h6 class="mt-2 text-dark">Kitaada Koperasi</h6>
                     </div>
 
 
-                    <h5 class="card-title">Login ADMIN</h5>
+                    <h5 class="card-title">Login</h5>
 
                     <!-- Display validation errors if any -->
                     @if ($errors->any())
