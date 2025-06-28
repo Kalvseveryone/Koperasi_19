@@ -1,258 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ asset('img/images/logoadakita.png') }}">
-    <title>Daftar Kolektor | Adakita Koperasi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+@section('title', 'Daftar Kolektor - KitaAda Koperasi')
 
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #e3f2fd, #f1f1f1);
-        }
-
-        h1 {
-            font-weight: 600;
-            font-size: 2.5rem;
-            letter-spacing: 1px;
-            color: #2e3a59;
-            margin-bottom: 30px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin-top: 50px;
-            transition: margin-left 0.3s ease;
-        }
-
-        .table {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: white;
-        }
-
-        .table th,
-        .table td {
-            text-align: center;
-        }
-
-        .table th {
-            background-color: #2e3a59;
-            color: white;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            border-radius: 10px;
-            padding: 10px 20px;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            border-radius: 10px;
-            padding: 5px 10px;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 250px;
-            background-color: #2e3a59;
-            padding: 30px 20px;
-            color: white;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 1050;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            margin: 15px 0;
-            padding: 10px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar a:hover {
-            background-color: #1b263b;
-            padding-left: 20px;
-        }
-
-        .sidebar img {
-            max-height: 60px;
-            margin-bottom: 30px;
-        }
-
-        .sidebar a.active-menu {
-            background-color: #2e3a59;
-            font-weight: bold;
-        }
-
-        .sidebar a.active-menu {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-            border-left: 4px solid white;
-        }
-
-        /* Toggle button */
-        .toggle-sidebar {
-            display: none;
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1100;
-            background-color: #2e3a59;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-        }
-
-        /* Responsive behavior */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 250px;
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .container {
-                margin-left: 0 !important;
-                padding-top: 80px;
-            }
-
-            .toggle-sidebar {
-                display: block;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .container {
-                margin-left: 270px;
-            }
-
-            .toggle-sidebar {
-                display: none;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Toggle Sidebar Button -->
-    <button class="btn toggle-sidebar" onclick="toggleSidebar()">☰</button>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="text-center mb-4">
-            <img src="{{ asset('img/images/logoadakita.png') }}" alt="Logo" class="img-fluid">
-            <h6 class="mt-2 text-white">Adakita Koperasi</h6>
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Kolektor</h3>
+                </div>
+                <div class="card-body">
+                    <div class="top-actions mb-3">
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                        <a href="{{ route('admin.kolektor.create') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Tambah Kolektor
+                        </a>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="kolektorTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Nama Kolektor</th>
+                                    <th>Email</th>
+                                    <th class="text-center" style="width: 150px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($kolektors as $k)
+                                <tr>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $k->nama }}</td>
+                                    <td>{{ $k->email }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('admin.kolektor.show', $k->id) }}" class="btn btn-info btn-sm" title="Detail">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.kolektor.edit', $k->id) }}" class="btn btn-warning btn-sm" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="{{ route('admin.kolektor.destroy', $k->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus kolektor ini?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
         </div>
-
-        <a href="{{ route('admin.dashboard') }}"
-            class="{{ request()->routeIs('admin.dashboard') ? 'active-menu' : '' }}">
-            🏠 Dashboard
-        </a>
-        <a href="{{ route('admin.anggota') }}" class="{{ request()->routeIs('admin.anggota') ? 'active-menu' : '' }}">
-            👥 Kelola Anggota
-        </a>
-        <a href="{{ route('admin.pinjaman') }}" class="{{ request()->routeIs('admin.pinjaman') ? 'active-menu' : '' }}">
-            💰 Kelola Pinjaman
-        </a>
-        <a href="{{ route('admin.kolektor') }}" class="{{ request()->routeIs('admin.kolektor') ? 'active-menu' : '' }}">
-            🚚 Kelola Kolektor
-        </a>
-        <a href="{{ route('admin.laporan') }}" class="{{ request()->routeIs('admin.laporan') ? 'active-menu' : '' }}">
-            📊 Lihat Laporan Keuangan
-        </a>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-danger w-100 mt-4">
-                <i class="bi bi-box-arrow-right"></i> Logout
-            </button>
-        </form>
     </div>
+</div>
+@endsection
 
-    <!-- Main Content -->
-    <div class="container">
-        <h1 class="text-center">Daftar Kolektor</h1>
-
-        <!-- Button to add new Kolektor -->
-        <div class="mb-3 text-end">
-            <a href="{{ route('admin.kolektor.create') }}" class="btn btn-primary">Tambah Kolektor</a>
-        </div>
-
-        <!-- Table -->
-        <table id="kolektorTable" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nama</th>
-                    <th>Anggota</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($kolektors as $k)
-                    <tr>
-                        <td>{{ $k->id }}</td>
-                        <td>{{ $k->nama }}</td>
-                        <td>{{ $k->anggota->nama }}</td>
-                        <td>
-                            <a href="{{ route('admin.kolektor.show', $k->id) }}" class="btn btn-info btn-sm">Detail</a>
-                            <a href="{{ route('admin.kolektor.edit', $k->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('admin.kolektor.destroy', $k->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#kolektorTable').DataTable();
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#kolektorTable').DataTable({
+            responsive: true,
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ entri",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                paginate: {
+                    first: "Awal",
+                    last: "Akhir",
+                    next: "→",
+                    previous: "←"
+                }
+            }
         });
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-        }
-    </script>
-</body>
-
-</html>
+        @if(session('message'))
+            Swal.fire({
+                title: 'Berhasil!',
+                text: '{{ session("message") }}',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#0d6efd'
+            });
+        @endif
+    });
+</script>
+@endpush

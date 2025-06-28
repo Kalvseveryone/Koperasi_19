@@ -1,250 +1,287 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" type="image/png" href="{{ asset('img/images/logoadakita.png') }}">
-    <title>Daftar Pinjaman | Adakita Koperasi</title>
+@section('title', 'Daftar Pinjaman - KitaAda Koperasi')
 
-    <!-- Bootstrap & DataTables CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css" rel="stylesheet">
+{{-- Set judul halaman --}}
+@section('title', 'Daftar Pinjaman')
 
-    <style>
-        body {
-            background: linear-gradient(120deg, #f0f4f7, #d9e2ec);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #2e3a59;
-            color: white;
-            padding: 30px 20px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-        }
-
-        .sidebar img {
-            max-height: 60px;
-            margin-bottom: 20px;
-        }
-
-        .sidebar h6 {
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        .sidebar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar a:hover {
-            background-color: #1b263b;
-            padding-left: 20px;
-        }
-
-        .sidebar a.active-menu {
-            background-color: #007bff;
-            font-weight: bold;
-        }
-
-        .sidebar .btn-logout {
-            margin-top: 30px;
-        }
-
-        .content {
-            margin-left: 270px;
-            padding: 40px 20px;
-            flex-grow: 1;
-            transition: margin-left 0.3s ease-in-out;
-        }
-
-        .container-custom {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        h1 {
-            color: #1e3a8a;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        table.dataTable thead {
-            background-color: #1e3a8a;
-            color: white;
-        }
-
-        .dataTables_wrapper .dataTables_filter input,
-        .dataTables_wrapper .dataTables_length select {
-            border-radius: 8px;
-            padding: 6px 10px;
-            border: 1px solid #ccc;
-        }
-
-        .hamburger {
-            display: none;
-            background-color: #2e3a59;
-            color: white;
-            border: none;
-            font-size: 24px;
-            padding: 10px 20px;
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 1100;
-            border-radius: 6px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .content {
-                margin-left: 0;
-            }
-
-            .hamburger {
-                display: block;
-            }
-
-            .table-responsive {
-                overflow-x: auto;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- Toggle Button -->
-    <button class="hamburger" onclick="toggleSidebar()">☰</button>
-
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="text-center mb-4">
-                <img src="{{ asset('img/images/logoadakita.png') }}" alt="Logo" class="img-fluid">
-                <h6 class="mt-2 text-white">Adakita Koperasi</h6>
-            </div>
-
-            <a href="{{ route('admin.dashboard') }}"
-                class="{{ request()->routeIs('admin.dashboard') ? 'active-menu' : '' }}">
-                🏠 Dashboard
-            </a>
-            <a href="{{ route('admin.anggota') }}"
-                class="{{ request()->routeIs('admin.anggota') ? 'active-menu' : '' }}">
-                👥 Kelola Anggota
-            </a>
-            <a href="{{ route('admin.pinjaman') }}"
-                class="{{ request()->routeIs('admin.pinjaman') ? 'active-menu' : '' }}">
-                💰 Kelola Pinjaman
-            </a>
-            <a href="{{ route('admin.kolektor') }}"
-                class="{{ request()->routeIs('admin.kolektor') ? 'active-menu' : '' }}">
-                🚚 Kelola Kolektor
-            </a>
-            <a href="{{ route('admin.laporan') }}"
-                class="{{ request()->routeIs('admin.laporan') ? 'active-menu' : '' }}">
-                📊 Lihat Laporan Keuangan
-            </a>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-danger w-100 mt-4">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
-            </form>
-
+@section('content')
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Daftar Pinjaman</h3>
         </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="pinjamanTable" class="table table-striped table-bordered display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Anggota</th>
+                            <th>Jumlah Pinjaman</th>
+                            <th>Denda</th>
+                            <th>Jangka Waktu</th>
+                            <th>Tujuan</th>
+                            <th>Status</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($pinjaman as $p)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $p->anggota->nama }}</td>
+                            <td>Rp {{ number_format($p->jumlah, 2, ',', '.') }}</td>
+                            <td>Rp {{ number_format($p->denda, 2, ',', '.') }}</td>
+                            <td>{{ $p->jangka_waktu }} bulan</td>
+                            <td>{{ $p->tujuan }}</td>
+                            <td>
+                                <span class="badge bg-{{ $p->status == 'pending' ? 'warning' : ($p->status == 'aktif' ? 'primary' : ($p->status == 'lunas' ? 'success' : 'danger')) }}">
+                                    {{ ucfirst($p->status) }}
+                                </span>
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($p->tanggal_pinjam)->format('d-m-Y') }}</td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {{-- Tombol Edit Pinjaman --}}
+                                    <a href="{{ route('admin.pinjaman.edit', $p->id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
 
-        <div class="content">
-            <div class="container-custom">
-                <h1>Daftar Pinjaman</h1>
+                                    @if($p->status == 'pending')
+                                        {{-- Tombol untuk memicu modal verifikasi, tambahkan data-id --}}
+                                        <button type="button" class="btn btn-sm btn-success btn-verify"
+                                            data-id="{{ $p->id }}" data-nama="{{ $p->anggota->nama }}">
+                                            <i class="fas fa-check"></i> Verifikasi
+                                        </button>
+                                    @endif
 
-                <div class="table-responsive">
-                    <table id="pinjamanTable" class="table table-striped table-bordered display nowrap"
-                        style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Anggota ID</th>
-                                <th>Jumlah Pinjaman</th>
-                                <th>Status</th>
-                                <th>Tanggal Pinjam</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pinjaman as $p)
-                                <tr>
-                                    <td>{{ $p->id }}</td>
-                                    <td>{{ $p->anggota_id }}</td>
-                                    <td>Rp {{ number_format($p->jumlah_pinjaman, 2, ',', '.') }}</td>
-                                    <td>{{ $p->status }}</td>
-                                    <td>{{ $p->tanggal_pinjam }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                    @if($p->status == 'aktif')
+                                        {{-- Tombol untuk memicu modal denda, tambahkan data-id --}}
+                                        <button type="button" class="btn btn-sm btn-warning btn-add-denda"
+                                            data-id="{{ $p->id }}" data-nama="{{ $p->anggota->nama }}">
+                                            <i class="fas fa-exclamation-triangle"></i> Tambah Denda
+                                        </button>
+
+                                        @if($p->denda > 0)
+                                            {{-- Tombol untuk memicu modal hapus denda, tambahkan data-id dan data-denda --}}
+                                            <button type="button" class="btn btn-sm btn-info btn-delete-denda"
+                                                data-id="{{ $p->id }}" data-nama="{{ $p->anggota->nama }}" data-denda="{{ $p->denda }}">
+                                                <i class="fas fa-eraser"></i> Hapus Denda
+                                            </button>
+                                        @endif
+                                    @endif
+                                    
+                                    {{-- Tombol hapus pinjaman --}}
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deletePinjaman({{ $p->id }})">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#pinjamanTable').DataTable({
-                responsive: true
-            });
-        });
+<div class="modal fade" id="verifikasiModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Verifikasi Pinjaman: <span id="verifikasiNamaAnggota"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="verifikasiForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select" required>
+                            <option value="aktif">Aktif</option>
+                            <option value="ditolak">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Catatan (Opsional)</label>
+                        <textarea name="catatan" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-        }
+<div class="modal fade" id="dendaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Denda untuk: <span id="dendaNamaAnggota"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="dendaForm" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah Denda</label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="number" name="denda" class="form-control" required min="1">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan</label>
+                        <textarea name="keterangan" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-        // Optional: close sidebar if clicking outside (mobile only)
-        document.addEventListener('click', function (e) {
-            const sidebar = document.getElementById('sidebar');
-            const button = document.querySelector('.hamburger');
-            if (!sidebar.contains(e.target) && !button.contains(e.target)) {
-                sidebar.classList.remove('show');
+<div class="modal fade" id="hapusDendaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hapus Denda dari: <span id="hapusDendaNamaAnggota"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="hapusDendaForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body">
+                    <p>Anda akan menghapus denda. Harap dicatat, ini akan menghapus **seluruh** jumlah denda yang ada.</p>
+                    <p>Jumlah denda saat ini: <strong id="jumlahDendaSaatIni"></strong></p>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan (Alasan Penghapusan)</label>
+                        <textarea name="keterangan" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-danger">Ya, Hapus Semua Denda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+
+@push('scripts')
+<script>
+    // Fungsi untuk hapus pinjaman (dari kode Anda, sudah bagus)
+    function deletePinjaman(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan bisa mengembalikan data pinjaman ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/pinjaman/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Terhapus!', 'Data pinjaman telah dihapus.', 'success')
+                        .then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus data.', 'error');
+                    }
+                });
+            }
+        })
+    }
+
+    $(document).ready(function() {
+        // Inisialisasi DataTable
+        const pinjamanTable = $('#pinjamanTable').DataTable({
+            responsive: true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
             }
         });
-    </script>
-</body>
 
-</html>
+        // --- SCRIPT UNTUK MODAL DINAMIS ---
+
+        // 1. Event listener untuk tombol Verifikasi
+        $('#pinjamanTable tbody').on('click', '.btn-verify', function() {
+            const pinjamanId = $(this).data('id');
+            const namaAnggota = $(this).data('nama');
+            
+            // Set URL action form
+            const url = `/admin/pinjaman/verify/${pinjamanId}`;
+            $('#verifikasiForm').attr('action', url);
+
+            // Set nama anggota di judul modal
+            $('#verifikasiNamaAnggota').text(namaAnggota);
+
+            // Tampilkan modal
+            const verifikasiModal = new bootstrap.Modal(document.getElementById('verifikasiModal'));
+            verifikasiModal.show();
+        });
+
+        // 2. Event listener untuk tombol Tambah Denda
+        $('#pinjamanTable tbody').on('click', '.btn-add-denda', function() {
+            const pinjamanId = $(this).data('id');
+            const namaAnggota = $(this).data('nama');
+            
+            // Set URL action form
+            const url = `/admin/pinjaman/add-denda/${pinjamanId}`;
+            $('#dendaForm').attr('action', url);
+            
+            // Set nama anggota di judul modal
+            $('#dendaNamaAnggota').text(namaAnggota);
+
+            // Tampilkan modal
+            const dendaModal = new bootstrap.Modal(document.getElementById('dendaModal'));
+            dendaModal.show();
+        });
+
+        // 3. Event listener untuk tombol Hapus Denda
+        $('#pinjamanTable tbody').on('click', '.btn-delete-denda', function() {
+            const pinjamanId = $(this).data('id');
+            const namaAnggota = $(this).data('nama');
+            const jumlahDenda = $(this).data('denda');
+            
+            // Format denda ke format Rupiah
+            const formattedDenda = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(jumlahDenda);
+
+            // Set URL action form
+            const url = `/admin/pinjaman/delete-denda/${pinjamanId}`;
+            $('#hapusDendaForm').attr('action', url);
+            
+            // Set data di dalam modal
+            $('#hapusDendaNamaAnggota').text(namaAnggota);
+            $('#jumlahDendaSaatIni').text(formattedDenda);
+
+            // Tampilkan modal
+            const hapusDendaModal = new bootstrap.Modal(document.getElementById('hapusDendaModal'));
+            hapusDendaModal.show();
+        });
+    });
+</script>
+@endpush

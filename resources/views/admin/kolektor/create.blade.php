@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('img/images/logoadakita.png') }}">
     <title>Tambah Kolektor | Adakita Koperasi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -169,7 +170,7 @@
         <a href="{{ route('admin.anggota') }}" class="{{ request()->routeIs('admin.anggota') ? 'active-menu' : '' }}">
             👥 Kelola Anggota
         </a>
-        <a href="{{ route('admin.pinjaman') }}" class="{{ request()->routeIs('admin.pinjaman') ? 'active-menu' : '' }}">
+        <a href="{{ route('admin.pinjaman.index') }}" class="{{ request()->routeIs('admin.pinjaman.index') ? 'active-menu' : '' }}">
             💰 Kelola Pinjaman
         </a>
         <a href="{{ route('admin.kolektor') }}" class="{{ request()->routeIs('admin.kolektor') ? 'active-menu' : '' }}">
@@ -196,21 +197,40 @@
                 @csrf
 
                 <!-- Input Nama -->
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="nama" class="form-label">Nama Kolektor</label>
-                    <input type="text" id="nama" name="nama" class="form-control" required
-                        placeholder="Masukkan nama kolektor">
+                    <input type="text" class="form-control" id="nama" name="nama" required>
                 </div>
 
-                <!-- Pilih Anggota -->
-                <div class="mb-4">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="form-text">Email ini akan digunakan untuk login sebagai kolektor</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="form-text">Password minimal 6 karakter</div>
+                </div>
+                
+
+                <div class="mb-3">
                     <label for="anggota_id" class="form-label">Pilih Anggota</label>
-                    <select name="anggota_id" id="anggota_id" class="form-control" required>
-                        <option value="" disabled selected>-- Pilih Anggota --</option>
-                        @foreach ($anggotas as $anggota)
-                            <option value="{{ $anggota->id }}">{{ $anggota->nama }}</option>
-                        @endforeach
+                    <select class="form-select @error('anggota_id') is-invalid @enderror" id="anggota_id" name="anggota_id" required>
+                        <option value="">Pilih Anggota</option>
+                        @forelse ($anggotas as $anggota)
+                            <option value="{{ $anggota->id }}" {{ old('anggota_id') == $anggota->id ? 'selected' : '' }}>
+                                {{ $anggota->nama }}
+                            </option>
+                        @empty
+                            <option value="" disabled>Tidak ada anggota yang tersedia</option>
+                        @endforelse
                     </select>
+                    @error('anggota_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="form-text">Hanya menampilkan anggota yang belum memiliki kolektor</div>
                 </div>
 
                 <!-- Tombol Submit -->
@@ -227,10 +247,54 @@
         </div>
     </div>
 
+    <!-- jQuery, Bootstrap JS, dan SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
+
+        // Handle form submission
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                            showConfirmButton: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '{{ route("admin.kolektor") }}';
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        let errorMessage = 'Terjadi kesalahan! Silakan coba lagi.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: errorMessage
+                        });
+                    }
+                });
+            });
+        });
     </script>
 
 </body>
